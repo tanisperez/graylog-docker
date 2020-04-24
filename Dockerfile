@@ -3,8 +3,8 @@
 # layer for download and verifying
 FROM debian:stretch-slim as graylog-downloader
 
-ARG VCS_REF
-ARG GRAYLOG_VERSION
+ARG VCS_REF=http://localhost:9000/
+ARG GRAYLOG_VERSION=3.2.4
 
 WORKDIR /tmp
 
@@ -53,7 +53,7 @@ RUN \
 #
 # final layer
 # use the smallest debain with headless openjdk and copying files from download layers
-FROM openjdk:8-jre-slim
+FROM openjdk:11.0.7-slim-buster
 
 ARG VCS_REF
 ARG GRAYLOG_VERSION
@@ -71,7 +71,7 @@ WORKDIR ${GRAYLOG_HOME}
 
 # hadolint ignore=DL3027,DL3008
 RUN \
-  echo "export JAVA_HOME=/usr/local/openjdk-8"     > /etc/profile.d/graylog.sh && \
+  echo "export JAVA_HOME=/usr/local/openjdk-11"     > /etc/profile.d/graylog.sh && \
   echo "export BUILD_DATE=${BUILD_DATE}"           >> /etc/profile.d/graylog.sh && \
   echo "export GRAYLOG_VERSION=${GRAYLOG_VERSION}" >> /etc/profile.d/graylog.sh && \
   echo "export GRAYLOG_SERVER_JAVA_OPTS='-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:NewRatio=1 -XX:MaxMetaspaceSize=256m -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow'" >> /etc/profile.d/graylog.sh && \
@@ -142,7 +142,7 @@ LABEL maintainer="Graylog, Inc. <hello@graylog.com>" \
       org.label-schema.description="Official Graylog Docker image" \
       org.label-schema.url="https://www.graylog.org/" \
       org.label-schema.vcs-ref=${VCS_REF} \
-      org.label-schema.vcs-url="https://github.com/Graylog2/graylog-docker" \
+      org.label-schema.vcs-url="https://github.com/tanisperez/graylog-docker/" \
       org.label-schema.vendor="Graylog, Inc." \
       org.label-schema.version=${GRAYLOG_VERSION} \
       org.label-schema.schema-version="1.0" \
