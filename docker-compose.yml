@@ -1,0 +1,30 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    #environment:
+    #  - MONGO_INITDB_ROOT_USERNAME=root
+    #  - MONGO_INITDB_ROOT_PASSWORD=root
+    ports:
+      - "27017:27017"
+  elasticsearch:
+    image: webhippie/elasticsearch:latest
+    container_name: elasticsearch
+    environment:
+      - HTTP.HOST=0.0.0.0
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+     - "9200:9200"
+  graylog:
+    image: tanisperez/graylog:3.2-arm64
+    container_name: graylog
+    environment:
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://0.0.0.0:9000/
+    ports:
+     - "9000:9000"
+     - "12201:12201"
+    links:
+     - "mongo"
+     - "elasticsearch"
+
