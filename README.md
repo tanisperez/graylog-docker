@@ -1,5 +1,8 @@
 # Graylog Docker Image
 
+Custom Docker Image with OpenJDK 11 to make Graylog run on a Raspberry Pi 4 on Ubuntu Server 20.04 aarch64. This docker image was tested
+on the Raspberry Pi 4 4GB edition.
+
 Latest stable version of Graylog is *3.2.4* this Version is available with the tags `3.2` or `3.2.4-1`.
 
 [![Build Status](https://travis-ci.org/Graylog2/graylog-docker.svg?branch=3.2)](https://travis-ci.org/Graylog2/graylog-docker) [![Docker Stars](https://img.shields.io/docker/stars/graylog/graylog.svg)][hub] [![Docker Pulls](https://img.shields.io/docker/pulls/graylog/graylog.svg)][hub] [![Image Size](https://images.microbadger.com/badges/image/graylog/graylog:3.2.svg)][microbadger] [![Image Version](https://images.microbadger.com/badges/version/graylog/graylog:3.2.svg)][microbadger] [![Image License](https://images.microbadger.com/badges/license/graylog/graylog:3.2.svg)][microbadger]
