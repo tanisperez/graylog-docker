@@ -1,30 +1,44 @@
 version: '2'
 services:
-  mongo:
-    image: mongo:latest
-    container_name: mongo
-    #environment:
-    #  - MONGO_INITDB_ROOT_USERNAME=root
-    #  - MONGO_INITDB_ROOT_PASSWORD=root
-    ports:
-      - "27017:27017"
-  elasticsearch:
-    image: webhippie/elasticsearch:latest
-    container_name: elasticsearch
-    environment:
-      - HTTP.HOST=0.0.0.0
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    ports:
-     - "9200:9200"
-  graylog:
-    image: tanisperez/graylog:3.2-arm64
-    container_name: graylog
-    environment:
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://0.0.0.0:9000/
-    ports:
-     - "9000:9000"
-     - "12201:12201"
-    links:
-     - "mongo"
-     - "elasticsearch"
-
+    # MongoDB
+    mongodb:
+        image: mongo:latest
+        container_name: mongo
+    # Elasticsearch
+    elasticsearch:
+        image: webhippie/elasticsearch:latest
+        container_name: elasticsearch
+        environment:
+            - http.host=0.0.0.0
+            - transport.host=localhost
+            - network.host=0.0.0.0
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        mem_limit: 1g
+    # Graylog
+    graylog:
+        image: tanisperez/graylog:3.2-arm64
+        container_name: graylog
+        environment:
+          # Custom node IP
+          - GRAYLOG_HTTP_EXTERNAL_URI=http://192.168.1.11:9000/
+        links:
+            - mongodb:mongo
+            - elasticsearch
+        depends_on:
+            - mongodb
+            - elasticsearch
+        ports:
+            # Graylog web interface and REST API
+            - 9000:9000
+            # Syslog TCP
+            - 1514:1514
+            # Syslog UDP
+            - 1514:1514/udp
+            # GELF TCP
+            - 12201:12201
+            # GELF UDP
+            - 12201:12201/udp
