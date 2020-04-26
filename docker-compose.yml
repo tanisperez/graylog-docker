@@ -4,6 +4,11 @@ services:
     mongodb:
         image: mongo:latest
         container_name: mongo
+        volumes:
+            - /mnt/data/graylog/mongo/configdb:/data/configdb
+            - /mnt/data/graylog/mongo/db:/data/db
+        restart:
+            always
     # Elasticsearch
     elasticsearch:
         image: webhippie/elasticsearch:latest
@@ -13,11 +18,16 @@ services:
             - transport.host=localhost
             - network.host=0.0.0.0
             - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        volumes:
+            - /mnt/data/graylog/elastic/data:/usr/share/elasticsearch/data
+            - /mnt/data/graylog/elastic:/var/lib/elasticsearch
         ulimits:
             memlock:
                 soft: -1
                 hard: -1
         mem_limit: 1g
+        restart:
+            always
     # Graylog
     graylog:
         image: tanisperez/graylog:3.2-arm64
@@ -25,6 +35,8 @@ services:
         environment:
           # Custom node IP
           - GRAYLOG_HTTP_EXTERNAL_URI=http://192.168.1.11:9000/
+        volumes:
+            - /mnt/data/graylog/data:/usr/share/graylog/data
         links:
             - mongodb:mongo
             - elasticsearch
@@ -42,3 +54,5 @@ services:
             - 12201:12201
             # GELF UDP
             - 12201:12201/udp
+        restart:
+            always
